@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
+import toast from 'react-hot-toast';
+import axiosInstance from '../lib/axios';
 
 const Signup = () => {
+
+    const navigate = useNavigate()
     const [fullName, setFullName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,18 +16,50 @@ const Signup = () => {
     const [loading, setLoading] = useState(false)
 
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
+        if (!fullName) {
+            toast.error('Fullname is required.');
+            return;
+        }
+        if (!email) {
+            toast.error('Email is required.');
+            return;
+        }
         if (password !== confirmPassword) {
-            alert('Passwords do not match!');
+            toast.error('Password and confirm password must be same!');
             return;
         }
         setLoading(true)
-        console.log('Full Name:', fullName);
-        console.log('Email:', email);
-        console.log('Password:', password);
-        // Add your signup logic here
+        try {
+            console.log('Full Name:', fullName);
+            console.log('Email:', email);
+            console.log('Password:', password);
+            const res = await axiosInstance.post('/', {
+                email, password, fullName
+            })
+            console.log(res.data)
+            toast.success(res.data.message)
+            navigate('/login')
+        } catch (error) {
+            const status = error?.status
+            console.log('error in signup page: ', error.response.status)
+            console.log('error in signup page: ', error.response.data)
+
+
+            if (status === 500) {
+                return
+            }
+            toast.error(error?.response?.data?.message)
+        } finally {
+            setLoading(false),
+                setEmail('')
+            setConfirmPassword(''),
+                setPassword(''),
+                setFullName('')
+        }
     };
+
 
     return (
         <div className='w-full h-screen flex items-center justify-center'>
@@ -63,7 +99,7 @@ const Signup = () => {
                             required
                         />
                         <div
-                            className='absolute top-11 right-4  cursor-pointer text-gray-400 hover:text-purple-400'
+                            className='absolute top-10 right-4  cursor-pointer text-gray-400 hover:text-purple-400'
                             onClick={() => setShowPassword(!showPassword)}
                         >
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -80,7 +116,7 @@ const Signup = () => {
                             required
                         />
                         <div
-                            className='absolute top-11 right-4 cursor-pointer text-gray-400 hover:text-purple-400'
+                            className='absolute top-10 right-4 cursor-pointer text-gray-400 hover:text-purple-400'
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         >
                             {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}

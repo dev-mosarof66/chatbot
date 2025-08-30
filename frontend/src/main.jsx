@@ -5,10 +5,12 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router'
 import store from './store/store.js'
 import { Provider } from 'react-redux'
+import {Toaster} from 'react-hot-toast'
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Provider store={store}>
       <App />
+      <Toaster position='top-right'/>
     </Provider>
   </BrowserRouter>,
 )

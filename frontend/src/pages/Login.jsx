@@ -1,19 +1,55 @@
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
-import { Link } from 'react-router';
-
+import { Link, useNavigate } from 'react-router';
+import { toast } from 'react-hot-toast'
+import axiosInstance from '../lib/axios'
+import { useDispatch } from 'react-redux';
+import { setUser } from '../store/slices/user';
 const Login = () => {
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false)
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
+
+        if (!email) {
+            toast.error('Email is required')
+            return
+        }
+        if (!password) {
+            toast.error('Password is required')
+            return
+        }
         setLoading(true)
-        console.log('Email:', email);
-        console.log('Password:', password);
-        // Add your login logic here
+
+        try {
+            const res = await axiosInstance.post('/login', {
+                email,
+                password
+            })
+            console.log('res in login page: ', res.data)
+            toast.success(res.data.message)
+            dispatch(setUser(res.data.data))
+            navigate('/')
+        } catch (error) {
+            const status = error?.status
+            console.log('error in signup page: ', error.response.status)
+            console.log('error in signup page: ', error.response.data)
+
+
+            if (status === 500) {
+                return
+            }
+            toast.error(error?.response?.data?.message)
+        } finally {
+            setLoading(false)
+            setEmail('')
+            setPassword('')
+        }
     };
 
     return (
@@ -49,7 +85,7 @@ const Login = () => {
                             {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
                         </div>
                     </div>
-                    <button type='submit' className='bg-purple-600 hover:bg-purple-700 transition py-2 rounded-sm font-semibold'>
+                    <button type='submit' className='bg-purple-600 hover:bg-purple-700 cursor-pointer transition py-2 rounded-sm font-semibold'>
                         {
                             loading ? <span className="loading loading-sm loading-spinner text-neutral"></span>
                                 : 'Login'
