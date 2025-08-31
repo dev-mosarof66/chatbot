@@ -12,6 +12,8 @@ import Chat from './components/Chat';
 import NewChat from './components/NewChat';
 import Landing from './pages/Landing';
 import Pricing from './pages/Pricing';
+import Profile from './pages/Profile';
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -47,6 +49,7 @@ const App = () => {
         <Route index element={<NewChat />} />
         <Route path=":id" element={<Chat />} />
       </Route>
+      <Route path="/profile" element={data ? <Profile /> : <Navigate to={'/login'} />} />
       <Route path="/pricing" element={<Pricing />} />
       <Route path="/login" element={data ? <Navigate to="/" /> : <Login />} />
       <Route path="/signup" element={data ? <Navigate to="/" /> : <Signup />} />

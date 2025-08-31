@@ -1,6 +1,9 @@
 @import 'tailwindcss';
 @plugin 'daisyui';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+
 .scrollbar-hidden{
     scrollbar-width: none;
 }

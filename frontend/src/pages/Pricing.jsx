@@ -1,5 +1,6 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
 import { useNavigate } from 'react-router';
+import { motion } from 'framer-motion';
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const Pricing = () => {
       ],
       buttonText: 'Upgrade Now',
       isPrimary: true,
-      popular: true, // Flag for Most Popular
+      popular: true,
     },
     {
       name: 'Pro',
@@ -43,7 +44,7 @@ const Pricing = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center px-4 py-12">
+    <div className="min-h-screen bg-white dark:bg-gray-900 text-white flex flex-col items-center px-4 py-12">
       <h2 className="text-4xl font-extrabold mb-6 text-center">Pricing Plans</h2>
       <p className="text-gray-400 max-w-2xl text-center mb-12">
         Choose the plan that best fits your needs and start chatting smarter today.
@@ -51,11 +52,13 @@ const Pricing = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
         {tiers.map((tier) => (
-          <div
+          <motion.div
             key={tier.name}
-            className={`relative flex flex-col justify-between p-6 rounded-2xl shadow-lg border ${
-              tier.isPrimary ? 'bg-purple-600 text-white border-purple-600' : 'bg-gray-800 border-gray-700'
-            }`}
+            whileHover={{ scale: 1.01 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+            className={`relative flex flex-col justify-between p-6 rounded-2xl shadow-lg border cursor-pointer 
+              ${tier.isPrimary ? 'bg-purple-600 text-white border-purple-600' : 'bg-gray-800 border-gray-700'}
+            `}
           >
             {/* Most Popular Badge */}
             {tier.popular && (
@@ -78,15 +81,16 @@ const Pricing = () => {
             </div>
             <button
               onClick={() => navigate('/model-auto')}
-              className={`mt-auto px-6 py-3 rounded-lg font-semibold transition ${
-                tier.isPrimary
+              className={`mt-auto px-6 py-3 rounded-lg font-semibold transition
+                ${tier.isPrimary
                   ? 'bg-white text-purple-600 hover:bg-gray-100'
                   : 'bg-purple-600 text-white hover:bg-purple-700'
-              }`}
+                }
+               cursor-pointer transition duration-300 delay-75`}
             >
               {tier.buttonText}
             </button>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
